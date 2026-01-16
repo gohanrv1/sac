@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  # Servicio PHP con Apache
+  web:
+    build: .
+    container_name: taxi_app
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html
+      - ./uploads:/var/www/html/uploads
+      - ./excel:/var/www/html/excel
+      - ./descarga:/var/www/html/descarga
+    environment:
+      - DB_HOST=db
+      - DB_NAME=infotaxi
+      - DB_USER=root
+      - DB_PASS=taxi_password_2026
+    depends_on:
+      - db
+    networks:
+      - taxi_network
+    restart: unless-stopped
+
+  # Servicio MySQL
+  db:
+    image: mysql:8.0
+    container_name: taxi_db
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: taxi_password_2026
+      MYSQL_DATABASE: infotaxi
+      MYSQL_USER: taxi_user
+      MYSQL_PASSWORD: taxi_password_2026
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./u990140860_infotaxi.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - taxi_network
+    restart: unless-stopped
+
+  # PHPMyAdmin (opcional, para administrar la base de datos)
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: taxi_phpmyadmin
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      MYSQL_ROOT_PASSWORD: taxi_password_2026
+    depends_on:
+      - db
+    networks:
+      - taxi_network
+    restart: unless-stopped
+
+volumes:
+  mysql_data:
+    driver: local
+
+networks:
+  taxi_network:
+    driver: bridge

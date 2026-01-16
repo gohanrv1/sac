@@ -1,0 +1,50 @@
+# Git
+.git
+.gitignore
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Logs y caché
+application/logs/*.log
+application/cache/*
+!application/cache/index.html
+!application/cache/.htaccess
+
+# Archivos temporales
+*.tmp
+*.temp
+*.swp
+*.bak
+*~
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode
+.idea
+*.sublime-*
+
+# Node modules (si existen)
+node_modules/
+npm-debug.log
+
+# Composer (si existe)
+vendor/
+
+# Archivos de usuario
+uploads/*
+!uploads/index.html
+excel/*
+!excel/index.html
+descarga/*
+!descarga/index.html
+
+# Variables de entorno
+.env
+.env.local

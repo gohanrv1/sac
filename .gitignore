@@ -1,0 +1,48 @@
+# Logs y caché
+application/logs/*.log
+application/cache/*
+!application/cache/index.html
+!application/cache/.htaccess
+
+# Archivos temporales
+*.tmp
+*.temp
+*.swp
+*.bak
+*~
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode
+.idea
+*.sublime-*
+
+# Variables de entorno locales
+.env
+
+# Archivos de usuario (no subir datos sensibles)
+uploads/*.xlsx
+uploads/*.xls
+uploads/*.pdf
+!uploads/index.html
+
+excel/*.xlsx
+excel/*.xls
+!excel/index.html
+
+descarga/*
+!descarga/index.html
+
+# Backups
+backups/*.sql
+backups/*.sql.gz
+
+# Configuración local
+application/config/database.php.local
+
+# Error log del servidor
+error_log
