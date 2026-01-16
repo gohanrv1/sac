@@ -12,16 +12,11 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install -j$(nproc) gd \
     && docker-php-ext-install mysqli pdo pdo_mysql zip
 
-# Habilitar mod_rewrite de Apache
-RUN a2enmod rewrite
+# Habilitar mod_rewrite y mod_headers de Apache
+RUN a2enmod rewrite headers
 
-# Configurar Apache para CodeIgniter
-RUN echo '<Directory /var/www/html>\n\
-    Options Indexes FollowSymLinks\n\
-    AllowOverride All\n\
-    Require all granted\n\
-</Directory>' > /etc/apache2/conf-available/codeigniter.conf \
-    && a2enconf codeigniter
+# Copiar configuración personalizada de Apache
+COPY apache-config.conf /etc/apache2/sites-available/000-default.conf
 
 # Configurar php.ini
 RUN echo "upload_max_filesize = 20M" >> /usr/local/etc/php/conf.d/uploads.ini \
