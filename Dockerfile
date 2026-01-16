@@ -32,8 +32,13 @@ RUN echo "upload_max_filesize = 20M" >> /usr/local/etc/php/conf.d/uploads.ini \
 # Copiar archivos de la aplicación
 COPY . /var/www/html/
 
-# Establecer permisos
-RUN chown -R www-data:www-data /var/www/html \
+# Crear directorios necesarios si no existen y establecer permisos
+RUN mkdir -p /var/www/html/application/cache \
+    /var/www/html/application/logs \
+    /var/www/html/uploads \
+    /var/www/html/excel \
+    /var/www/html/descarga \
+    && chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html \
     && chmod -R 777 /var/www/html/application/cache \
     && chmod -R 777 /var/www/html/application/logs \
