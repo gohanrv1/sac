@@ -225,38 +225,40 @@ html,body {
 }
 
 #login-form .input-group {
-    position: relative;
+    display: flex;
+    width: 100%;
 }
 
 #login-form .form-control {
-    border-radius: 10px;
+    border-radius: 0 10px 10px 0;
     border: 2px solid #e8e8e8;
-    padding: 12px 20px 12px 50px;
+    border-left: none;
+    padding: 12px 20px;
     font-size: 15px;
     transition: all 0.3s ease;
-    width: 100%;
+    flex: 1;
 }
 
 #login-form .form-control:focus {
     border-color: #667eea;
     box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
-    transform: translateY(-2px);
+}
+
+#login-form .input-group:focus-within .input-group-addon {
+    border-color: #667eea;
 }
 
 #login-form .input-group-addon {
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 45px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border: none;
-    background: transparent !important;
-    color: #667eea !important;
-    z-index: 10;
-    pointer-events: none;
+    width: 50px;
+    border-radius: 10px 0 0 10px;
+    border: 2px solid #e8e8e8;
+    border-right: none;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: white !important;
+    transition: all 0.3s ease;
 }
 
 #login-form .input-group-addon i {
@@ -346,7 +348,7 @@ html,body {
                 <div class="form-group">
                     <label for="exampleInputEmail1">Email:</label>
                     <div class="input-group input-group-lg">
-                        <span class="input-group-addon addon-inside">
+                        <span class="input-group-addon">
                             <i class="glyph-icon icon-envelope-o"></i>
                         </span>
                         <input type="email" class="form-control" id="username" name="username" placeholder="Ingrese su email" required>
@@ -355,7 +357,7 @@ html,body {
                 <div class="form-group">
                     <label for="exampleInputPassword1">Contraseña:</label>
                     <div class="input-group input-group-lg">
-                        <span class="input-group-addon addon-inside">
+                        <span class="input-group-addon">
                             <i class="glyph-icon icon-unlock-alt"></i>
                         </span>
                         <input type="password" class="form-control" id="password" name="password" placeholder="Ingrese su contraseña" required>
