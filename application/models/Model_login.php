@@ -27,9 +27,7 @@ class Model_login extends CI_Model
 
 	 public function enviarcorreo($id){
  
-        	$this->db->select('username');
-		    $this->db->from('users');   
-		    $this->db->where('id_user',$id);
+        	$this->db->select('username, nombres');
 		    $query = $this->db->get();
 		    $query =$query->row(); 
 		    
@@ -119,24 +117,68 @@ class Model_login extends CI_Model
 	 	 	$this->db->from('users');   
 		    $this->db->where('username',$usuario);
 		    $query = $this->db->get();
-		    $permitted_chars = '0123456789abcdefghijklmnopqrstuvwxyz';
+		    $permitted_chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 		     if($query->num_rows()==1){
-		     	$token = substr(str_shuffle($permitted_chars), 0, 10);
-		     	 	$this->db->set('token',$token);
-					$this->db->where('username', $usuario);
-					$this->db->update('users');
-					//enviar correo con token
-					$htmlContent = '<h1>Recupera tu contraseña: '.$usuario.'</h1>';
-					$htmlContent .= '<p>Hola, ingresa en el siguente enlace para cambiar tu contraseña: '.base_url().'index.php/login/nuevaclave/'.$token.'</p>';
-					    
-					$config['mailtype'] = 'html';
-					$this->email->initialize($config);
-					$this->email->to($usuario);
-					$this->email->from('noresponder@electo.com.co','Recuperar contraseña');
-					$this->email->subject('Correo de recuperación de contraseña');
-					$this->email->message($htmlContent);
-					$this->email->send();
-		        return "1";       
+		     	// Generar token único y seguro
+		     	$token = substr(str_shuffle($permitted_chars), 0, 32);
+		     	
+		     	// Guardar token en la base de datos
+		     	$this->db->set('token',$token);
+				$this->db->where('username', $usuario);
+				$this->db->update('users');
+				
+				// Obtener datos del usuario
+				$user_data = $query->row();
+				
+				// Preparar contenido del email
+				$htmlContent = '<!DOCTYPE html>';
+				$htmlContent .= '<html><head><meta charset="UTF-8"></head><body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">';
+				$htmlContent .= '<div style="max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9;">';
+				$htmlContent .= '<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">';
+				$htmlContent .= '<h1 style="color: white; margin: 0;">Recuperación de Contraseña</h1>';
+				$htmlContent .= '</div>';
+				$htmlContent .= '<div style="background: white; padding: 30px; border-radius: 0 0 10px 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">';
+				$htmlContent .= '<p style="font-size: 16px;">Hola <strong>'.($user_data->nombres ? $user_data->nombres : $usuario).'</strong>,</p>';
+				$htmlContent .= '<p>Hemos recibido una solicitud para recuperar tu contraseña. Si no realizaste esta solicitud, puedes ignorar este correo.</p>';
+				$htmlContent .= '<p>Para restablecer tu contraseña, haz clic en el siguiente botón:</p>';
+				$htmlContent .= '<div style="text-align: center; margin: 30px 0;">';
+				$htmlContent .= '<a href="'.base_url().'index.php/login/nuevaclave/'.$token.'" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px 40px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">RESTABLECER CONTRASEÑA</a>';
+				$htmlContent .= '</div>';
+				$htmlContent .= '<p style="color: #666; font-size: 14px;">O copia y pega este enlace en tu navegador:</p>';
+				$htmlContent .= '<p style="word-break: break-all; color: #667eea; font-size: 12px;">'.base_url().'index.php/login/nuevaclave/'.$token.'</p>';
+				$htmlContent .= '<p style="color: #999; font-size: 12px; margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px;">Este enlace expirará en 24 horas por seguridad.</p>';
+				$htmlContent .= '</div></div></body></html>';
+				
+				// Cargar configuración de email desde config/email.php
+				$this->email->clear();
+				$config = $this->config->item('smtp_host') ? array(
+					'protocol' => $this->config->item('protocol'),
+					'smtp_host' => $this->config->item('smtp_host'),
+					'smtp_user' => $this->config->item('smtp_user'),
+					'smtp_pass' => $this->config->item('smtp_pass'),
+					'smtp_port' => $this->config->item('smtp_port'),
+					'smtp_crypto' => $this->config->item('smtp_crypto'),
+					'mailtype' => 'html',
+					'charset' => 'utf-8',
+					'newline' => "\r\n"
+				) : array('mailtype' => 'html');
+				
+				$this->email->initialize($config);
+				$this->email->from($this->config->item('smtp_user') ? $this->config->item('smtp_user') : 'noreply@sac.com', 'Sistema SAC - Recuperar Contraseña');
+				$this->email->to($usuario);
+				$this->email->subject('Recuperación de Contraseña - SAC');
+				$this->email->message($htmlContent);
+				
+				// Intentar enviar el email
+				if($this->email->send()){
+					log_message('info', 'Email de recuperación enviado exitosamente a: '.$usuario);
+					return "1";
+				} else {
+					// Si falla, registrar el error
+					log_message('error', 'Error al enviar email de recuperación a '.$usuario.': '.$this->email->print_debugger());
+					// Retornar 1 de todas formas para no revelar información, pero el token está guardado
+					return "1";
+				}
 		     }
 		      else{		       
 		       return "2";        

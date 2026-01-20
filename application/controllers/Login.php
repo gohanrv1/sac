@@ -181,17 +181,37 @@ public function enviarcorreo($id){
 
 	  $result =  $this->Model_login->enviarcorreo($id);
 
-	 		$htmlContent = '<h1>Activa tu cuenta en SAC</h1>';
-			$htmlContent .= '<p> Has click en activar ahora para comenzar a usar tu cuenta: <b><a href="'.base_url().'index.php/login/activarusuario/'.$id.'">ACTIVAR AHORA</a></b> <br />';
+	 		$htmlContent = '<!DOCTYPE html>';
+			$htmlContent .= '<html><head><meta charset="UTF-8"></head><body style="font-family: Arial, sans-serif;">';
+			$htmlContent .= '<div style="max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9;">';
+			$htmlContent .= '<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">';
+			$htmlContent .= '<h1 style="color: white; margin: 0;">Activa tu Cuenta SAC</h1>';
+			$htmlContent .= '</div>';
+			$htmlContent .= '<div style="background: white; padding: 30px; border-radius: 0 0 10px 10px;">';
+			$htmlContent .= '<p style="font-size: 16px;">Hola <strong>'.($result->nombres ? $result->nombres : $result->username).'</strong>,</p>';
+			$htmlContent .= '<p>¡Bienvenido a SAC! Tu cuenta ha sido creada exitosamente.</p>';
+			$htmlContent .= '<p>Para comenzar a usar tu cuenta, haz clic en el siguiente botón para activarla:</p>';
+			$htmlContent .= '<div style="text-align: center; margin: 30px 0;">';
+			$htmlContent .= '<a href="'.base_url().'index.php/login/activarusuario/'.$id.'" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px 40px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">ACTIVAR CUENTA AHORA</a>';
+			$htmlContent .= '</div>';
+			$htmlContent .= '<p style="color: #666; font-size: 14px;">O copia y pega este enlace en tu navegador:</p>';
+			$htmlContent .= '<p style="word-break: break-all; color: #667eea; font-size: 12px;">'.base_url().'index.php/login/activarusuario/'.$id.'</p>';
+			$htmlContent .= '</div></div></body></html>';
 
 					$correo=$result->username;
-					$config['mailtype'] = 'html';
+					$this->email->clear();
+					$config = array('mailtype' => 'html', 'charset' => 'utf-8', 'newline' => "\r\n");
 					$this->email->initialize($config);
+					$this->email->from($this->config->item('smtp_user') ? $this->config->item('smtp_user') : 'noreply@sac.com', 'Sistema SAC');
 					$this->email->to($correo);
-					$this->email->from('noresponder@electo.com.co','SAC');
-					$this->email->subject('Cuenta Activada '. $correo);
+					$this->email->subject('Activa tu Cuenta - SAC');
 					$this->email->message($htmlContent);				
-					$this->email->send();
+					
+					if($this->email->send()){
+						log_message('info', 'Email de activación enviado a: '.$correo);
+					} else {
+						log_message('error', 'Error enviando email de activación: '.$this->email->print_debugger());
+					}
 
 			 	 
 	 echo "<script> alert('Correo de activacion enviado al usuario.');  window.location='".base_url()."'</script>";
