@@ -224,12 +224,17 @@ html,body {
     padding: 40px !important;
 }
 
+#login-form .input-group {
+    position: relative;
+}
+
 #login-form .form-control {
     border-radius: 10px;
     border: 2px solid #e8e8e8;
     padding: 12px 20px 12px 50px;
     font-size: 15px;
     transition: all 0.3s ease;
+    width: 100%;
 }
 
 #login-form .form-control:focus {
@@ -239,12 +244,19 @@ html,body {
 }
 
 #login-form .input-group-addon {
-    border-radius: 10px 0 0 10px;
-    border: 2px solid #e8e8e8;
-    border-right: none;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-    color: white !important;
-    padding: 12px 15px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: transparent !important;
+    color: #667eea !important;
+    z-index: 10;
+    pointer-events: none;
 }
 
 #login-form .input-group-addon i {
@@ -262,10 +274,11 @@ html,body {
     padding: 0;
     background: transparent;
     border-top: none;
+    margin-top: 20px;
 }
 
 #login-form .button-pane .btn {
-    border-radius: 0 0 20px 20px;
+    border-radius: 10px;
     padding: 15px;
     font-size: 16px;
     font-weight: 600;
@@ -274,11 +287,14 @@ html,body {
     transition: all 0.3s ease;
     text-transform: uppercase;
     letter-spacing: 1px;
+    color: #ffffff;
+    width: 100%;
 }
 
 #login-form .button-pane .btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
 }
 
 .center-vertical h3 {
@@ -330,19 +346,19 @@ html,body {
                 <div class="form-group">
                     <label for="exampleInputEmail1">Email:</label>
                     <div class="input-group input-group-lg">
-                        <span class="input-group-addon addon-inside bg-white font-primary">
+                        <span class="input-group-addon addon-inside">
                             <i class="glyph-icon icon-envelope-o"></i>
                         </span>
-                        <input type="email" class="form-control" id="username" name="username" placeholder="Enter email" required>
+                        <input type="email" class="form-control" id="username" name="username" placeholder="Ingrese su email" required>
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="exampleInputPassword1">Contraseña:</label>
                     <div class="input-group input-group-lg">
-                        <span class="input-group-addon addon-inside bg-white font-primary">
+                        <span class="input-group-addon addon-inside">
                             <i class="glyph-icon icon-unlock-alt"></i>
                         </span>
-                        <input type="password" class="form-control" id="password" name="password" placeholder="Contraseña" required>
+                        <input type="password" class="form-control" id="password" name="password" placeholder="Ingrese su contraseña" required>
                     </div>
                 </div>
                         <div class="row">
