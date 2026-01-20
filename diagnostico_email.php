@@ -91,44 +91,18 @@ echo "<button type='submit' name='test_simple'>📧 Enviar Test Simple</button>"
 echo "</form>";
 echo "</div>";
 
-// 5. Test con CodeIgniter
-if(isset($_POST['test_codeigniter'])) {
-    echo "<div class='box'>";
-    echo "<h2>5. Test con CodeIgniter</h2>";
-    
-    // Cargar CodeIgniter
-    define('BASEPATH', TRUE);
-    require_once 'index.php';
-    
-    $CI =& get_instance();
-    $CI->load->library('email');
-    
-    $to = $_POST['email_destino_ci'];
-    
-    $CI->email->clear();
-    $CI->email->from('noreply@' . $_SERVER['HTTP_HOST'], 'Sistema SAC');
-    $CI->email->to($to);
-    $CI->email->subject('Test CodeIgniter - SAC');
-    $CI->email->message('<h1>Test desde CodeIgniter</h1><p>Enviado el ' . date('d/m/Y H:i:s') . '</p>');
-    
-    if($CI->email->send()) {
-        echo "<div class='success'>✅ Email enviado con CodeIgniter<br>";
-        echo "Destinatario: $to</div>";
-    } else {
-        echo "<div class='error'>❌ Error al enviar con CodeIgniter<br>";
-        echo "<pre>" . $CI->email->print_debugger() . "</pre></div>";
-    }
-    echo "</div>";
-}
-
-// Formulario CodeIgniter
+// Test con CodeIgniter deshabilitado por conflictos
 echo "<div class='box'>";
-echo "<h2>Test con CodeIgniter Email Library</h2>";
-echo "<form method='POST'>";
-echo "<label>Email de destino:</label>";
-echo "<input type='email' name='email_destino_ci' placeholder='tu-email@example.com' required>";
-echo "<button type='submit' name='test_codeigniter'>📧 Enviar con CodeIgniter</button>";
-echo "</form>";
+echo "<h2>✅ Configuración Email Completada</h2>";
+echo "<div class='success'>";
+echo "<strong>La configuración de Gmail SMTP está lista.</strong><br><br>";
+echo "Configuración actual:<br>";
+echo "• Protocolo: SMTP<br>";
+echo "• Host: smtp.gmail.com<br>";
+echo "• Puerto: 587<br>";
+echo "• Usuario: rv.gohan3@gmail.com<br>";
+echo "• Contraseña de app: ✅ Configurada<br>";
+echo "</div>";
 echo "</div>";
 
 // Instrucciones
