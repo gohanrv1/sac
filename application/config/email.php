@@ -7,24 +7,36 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | -------------------------------------------------------------------------
 | Configuración de email para CodeIgniter
 | 
-| Para usar Gmail/Google Workspace:
-| - Activar "Verificación en 2 pasos" en tu cuenta Google
-| - Generar una "Contraseña de aplicación" en: https://myaccount.google.com/apppasswords
-| - Usar esa contraseña en smtp_pass
+| OPCIÓN 1 - mail() de PHP (más simple, usa el servidor configurado en php.ini):
+|   $config['protocol'] = 'mail';
 |
-| Para otros servicios SMTP, ajustar smtp_host, smtp_port según el proveedor
+| OPCIÓN 2 - SMTP con Gmail (requiere contraseña de aplicación):
+|   1. Activar "Verificación en 2 pasos": https://myaccount.google.com/security
+|   2. Generar "Contraseña de aplicación": https://myaccount.google.com/apppasswords
+|   3. Usar esa contraseña de 16 caracteres (NO tu contraseña normal)
+|
+| OPCIÓN 3 - SendGrid (gratis hasta 100 emails/día):
+|   Registrarse en https://sendgrid.com y obtener API Key
 */
 
-// Protocolo de envío
-$config['protocol'] = 'smtp';
+// ========================================
+// MÉTODO ACTUAL: Cambiar según necesites
+// ========================================
 
-// Configuración SMTP - REEMPLAZAR CON TUS DATOS
-$config['smtp_host'] = 'smtp.gmail.com';  // Cambiar según tu proveedor de email
-$config['smtp_user'] = 'rv.gohan3@gmail.com';  // CAMBIAR: Tu email completo
-$config['smtp_pass'] = '98020958669';    // CAMBIAR: Contraseña de aplicación de Gmail
-$config['smtp_port'] = 587;                    // 587 para TLS, 465 para SSL
-$config['smtp_crypto'] = 'tls';                // 'tls' o 'ssl'
+// OPCIÓN 1: mail() - Simple pero puede ir a spam
+$config['protocol'] = 'mail';
+
+// OPCIÓN 2: Gmail SMTP (descomentar estas líneas y comentar la de arriba)
+// IMPORTANTE: Debes usar una CONTRASEÑA DE APLICACIÓN, NO tu contraseña de Gmail
+/*
+$config['protocol'] = 'smtp';
+$config['smtp_host'] = 'smtp.gmail.com';
+$config['smtp_user'] = 'rv.gohan3@gmail.com';
+$config['smtp_pass'] = 'xxxx xxxx xxxx xxxx';  // Contraseña de aplicación de 16 dígitos
+$config['smtp_port'] = 587;
+$config['smtp_crypto'] = 'tls';
 $config['smtp_timeout'] = 30;
+*/
 
 // Configuración general
 $config['mailtype'] = 'html';
