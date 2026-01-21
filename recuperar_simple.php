@@ -49,12 +49,17 @@ function enviar_email_simple($to, $subject, $body, $from_email, $password) {
     fputs($smtp, "EHLO " . gethostname() . "\r\n");
     $response = fgets($smtp, 515);
     
+    // Leer todas las líneas de la respuesta EHLO
+    while(substr($response, 3, 1) == '-') {
+        $response = fgets($smtp, 515);
+    }
+    
     fputs($smtp, "STARTTLS\r\n");
     $response = fgets($smtp, 515);
     
     if(substr($response, 0, 3) != '220') {
         fclose($smtp);
-        return array('success' => false, 'error' => 'STARTTLS falló: ' . $response);
+        return array('success' => false, 'error' => 'Tu servidor no puede conectarse a Gmail SMTP. Contacta a tu proveedor de hosting.');
     }
     
     $crypto = @stream_socket_enable_crypto($smtp, true, STREAM_CRYPTO_METHOD_TLS_CLIENT);
@@ -66,6 +71,11 @@ function enviar_email_simple($to, $subject, $body, $from_email, $password) {
     
     fputs($smtp, "EHLO " . gethostname() . "\r\n");
     $response = fgets($smtp, 515);
+    
+    // Leer todas las líneas de la respuesta EHLO después de TLS
+    while(substr($response, 3, 1) == '-') {
+        $response = fgets($smtp, 515);
+    }
     
     fputs($smtp, "AUTH LOGIN\r\n");
     $response = fgets($smtp, 515);
@@ -184,17 +194,9 @@ if(isset($_POST['recuperar'])) {
             $nombre = !empty($user->nombres) ? $user->nombres : $email;
             
             echo "<div class='success'>";
-            echo "<strong>✅ Token generado exitosamente</strong><br>";
-            echo "Usuario: " . htmlspecialchars($nombre) . "<br>";
-            echo "Token guardado en la base de datos";
+            echo "<strong>✅ Solicitud procesada</strong><br>";
+            echo "Usuario: " . htmlspecialchars($nombre);
             echo "</div>";
-            
-            echo "<div class='enlace-box'>";
-            echo "<strong>🔗 Enlace de Recuperación:</strong><br><br>";
-            echo "<a href='".$enlace."' target='_blank'>" . $enlace . "</a>";
-            echo "</div>";
-            
-            echo "<a href='".$enlace."' target='_blank' style='display: inline-block; width: 100%; padding: 15px; background: #28a745; color: white; text-decoration: none; border-radius: 8px; text-align: center; font-weight: bold; margin: 10px 0;'>👉 Ir al Enlace de Recuperación</a>";
             
             // Preparar email
             $subject = 'Recuperación de Contraseña - SAC';
@@ -226,20 +228,26 @@ if(isset($_POST['recuperar'])) {
             if($resultado['success']) {
                 echo "<div class='success'>";
                 echo "<strong>✅ ¡EMAIL ENVIADO EXITOSAMENTE!</strong><br><br>";
-                echo "El correo ha sido enviado a: <strong>" . htmlspecialchars($email) . "</strong><br>";
-                echo "Revisa tu bandeja de entrada y la carpeta de SPAM.";
+                echo "El correo de recuperación ha sido enviado a: <strong>" . htmlspecialchars($email) . "</strong><br><br>";
+                echo "<strong>Pasos siguientes:</strong><br>";
+                echo "1. Revisa tu bandeja de entrada<br>";
+                echo "2. Verifica también la carpeta de SPAM/Correo no deseado<br>";
+                echo "3. Haz clic en el enlace del correo para cambiar tu contraseña<br><br>";
+                echo "<small>Si no recibes el correo en 5 minutos, intenta de nuevo.</small>";
                 echo "</div>";
             } else {
                 echo "<div class='error'>";
                 echo "<strong>❌ No se pudo enviar el email</strong><br><br>";
-                echo "Motivo: " . htmlspecialchars($resultado['error']) . "<br><br>";
-                echo "<strong>SOLUCIÓN:</strong> Usa el enlace de arriba para recuperar tu contraseña.";
+                echo "Error: Tu servidor no puede conectarse al servidor de Gmail para enviar emails.<br><br>";
+                echo "<strong>SOLUCIÓN:</strong> Contacta al administrador del sistema o al soporte de tu hosting para que habiliten las conexiones SMTP salientes al puerto 587.";
                 echo "</div>";
                 
                 echo "<div class='warning'>";
-                echo "<strong>⚠️ Diagnóstico:</strong><br>";
-                echo "Tu servidor tiene restricciones para enviar emails.<br>";
-                echo "Contacta a tu proveedor de hosting para habilitar el envío de emails SMTP.";
+                echo "<strong>⚠️ Causa Técnica:</strong><br>";
+                echo "• El servidor bloquea conexiones SMTP salientes<br>";
+                echo "• El puerto 587 no está disponible<br>";
+                echo "• La extensión OpenSSL o fsockopen está deshabilitada<br><br>";
+                echo "Pide a tu proveedor de hosting que revise estas configuraciones.";
                 echo "</div>";
             }
             
