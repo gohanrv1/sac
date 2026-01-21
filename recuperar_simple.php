@@ -11,10 +11,11 @@
 // ========================================
 
 // Configuración de base de datos
-$DB_HOST = 'localhost';
-$DB_USER = 'root';  // Cambiar si es diferente
-$DB_PASS = '';      // Cambiar si tienes contraseña
-$DB_NAME = 'u990140860_infotaxi';
+$DB_HOST = '31.97.130.20';
+$DB_USER = 'mariadb';
+$DB_PASS = '9204a8246f7ed4fe49e6';
+$DB_NAME = 'electo';
+$DB_PORT = 4646;
 
 // Configuración de Gmail
 $GMAIL_USER = 'rv.gohan3@gmail.com';
@@ -106,7 +107,7 @@ function enviar_email_simple($to, $subject, $body, $from_email, $password) {
 }
 
 // Conectar a base de datos
-$mysqli = @new mysqli($DB_HOST, $DB_USER, $DB_PASS, $DB_NAME);
+$mysqli = @new mysqli($DB_HOST, $DB_USER, $DB_PASS, $DB_NAME, $DB_PORT);
 
 if ($mysqli->connect_error) {
     die("Error de conexión: <strong>Verifica la configuración de base de datos en recuperar_simple.php</strong><br>" . $mysqli->connect_error);
