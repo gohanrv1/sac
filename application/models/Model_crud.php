@@ -11,15 +11,20 @@ class Model_crud extends CI_Model
         $this->load->library(array('session'));
     }
 
-     public function consultarcc($cc){
+     public function consultarcc($cc, $user){
 
  
    
-    $query = $this->db->query("SELECT * FROM `personas` inner join users on personas.Reportante_Nombres = users.id_user  where Numero_Documento = $cc");
+    $query = $this->db->query("SELECT * FROM `personas` inner join users on personas.Reportante_Nombres = users.id_user  where Numero_Documento = $cc AND Reportante_Nombres = $user");
     return $query->result_array(); 
     //return $cc;
     
     
+    }
+    
+    public function consultarcc_todos($cc){
+    $query = $this->db->query("SELECT * FROM `personas` inner join users on personas.Reportante_Nombres = users.id_user  where Numero_Documento = $cc");
+    return $query->result_array(); 
     }
         public function consultarcca($cc,$user){
 
@@ -84,8 +89,9 @@ class Model_crud extends CI_Model
         $this->db->delete('personas');
     }
     
-    public function eliminar_por_id($id){
+    public function eliminar_por_id($id, $user){
         $this->db->where('id', $id);
+        $this->db->where('Reportante_Nombres', $user);
         $this->db->delete('personas');
         return $this->db->affected_rows() > 0;
     }
@@ -118,7 +124,7 @@ class Model_crud extends CI_Model
         
     }
     
-    public function actualizar_reporte_por_id($id,$nombres,$apellidos,$placa,$d_reporte,$Valor_Reporte,$Estado,$F_r,$f_C){
+    public function actualizar_reporte_por_id($id,$nombres,$apellidos,$placa,$d_reporte,$Valor_Reporte,$Estado,$F_r,$f_C,$user){
         date_default_timezone_set('America/Bogota');
         $data = array(
             'Nombres' => $nombres,
@@ -132,6 +138,7 @@ class Model_crud extends CI_Model
         ); 
         
         $this->db->where('id', $id);
+        $this->db->where('Reportante_Nombres', $user);
         $this->db->update('personas', $data);
         return $this->db->affected_rows() > 0 ? 2 : 0;
     }

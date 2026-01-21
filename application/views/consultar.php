@@ -610,7 +610,7 @@ $(document).ready(function() {
 
            $.ajax({
                     type: "POST",
-                    url: "<?php echo base_url();?>index.php/crud/consultarcc",
+                    url: "<?php echo base_url();?>index.php/crud/consultarcc_todos",
                     data: { cc : cc } 
                 }).done(function(taxista){
                     console.log(taxista)

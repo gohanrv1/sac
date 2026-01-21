@@ -73,11 +73,22 @@ public function consultarcc(){
       
         $user =  $this->session->userdata('id_usuario');
       $datos2= $this->Model_crud->contador_consulta($user);
-      $datos= $this->Model_crud->consultarcc($cc);
+      $datos= $this->Model_crud->consultarcc($cc, $user);
       
        
       echo json_encode($datos);
 
+  }
+  
+  public function consultarcc_todos(){
+      $cc = $this->input->post("cc");
+      $cc = $this->security->xss_clean($cc);
+      
+      $user =  $this->session->userdata('id_usuario');
+      $datos2= $this->Model_crud->contador_consulta($user);
+      $datos= $this->Model_crud->consultarcc_todos($cc);
+      
+      echo json_encode($datos);
   }
   public function consultarcca(){
       
@@ -177,15 +188,17 @@ public function consultarcc(){
         $Estado = strtoupper($data['Estado']);
         $F_r = $data['fecha_reporte'];
         $f_C = $data['f_cierre'];
+        $user = $this->session->userdata('id_usuario');
 
-        $result = $this->Model_crud->actualizar_reporte_por_id($id,$nombres,$apellidos,$placa,$d_reporte,$Valor_Reporte,$Estado,$F_r,$f_C);
+        $result = $this->Model_crud->actualizar_reporte_por_id($id,$nombres,$apellidos,$placa,$d_reporte,$Valor_Reporte,$Estado,$F_r,$f_C,$user);
         echo json_encode($result);
     }
   
   public function eliminar_id(){
         $id = $this->input->post("id");
         $id = $this->security->xss_clean($id);
-        $resultado = $this->Model_crud->eliminar_por_id($id);
+        $user = $this->session->userdata('id_usuario');
+        $resultado = $this->Model_crud->eliminar_por_id($id, $user);
         echo $resultado ? 2 : 0;
     }
   

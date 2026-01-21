@@ -198,7 +198,7 @@ class Importar extends CI_Controller {
       {
          redirect(base_url().'index.php/login');
         }
-    if($this->session->userdata('rol')=="admin"){
+    if($this->session->userdata('rol')=="admin" || $this->session->userdata('rol')=="usuario"  ){
 
     }else{
         return  redirect(base_url().'index.php/login');
