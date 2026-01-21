@@ -119,8 +119,8 @@ class Model_login extends CI_Model
 		    $query = $this->db->get();
 		    $permitted_chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 		     if($query->num_rows()==1){
-		     	// Generar token único y seguro
-		     	$token = substr(str_shuffle($permitted_chars), 0, 32);
+		     	// Generar token único
+		     	$token = substr(str_shuffle($permitted_chars), 0, 10);
 		     	
 		     	// Guardar token en la base de datos
 		     	$this->db->set('token',$token);
@@ -130,12 +130,13 @@ class Model_login extends CI_Model
 				// Obtener datos del usuario
 				$user_data = $query->row();
 				
-				// Preparar contenido del email
+				// Preparar enlace y contenido
 				$enlace = base_url().'index.php/login/nuevaclave/'.$token;
 				$nombre = $user_data->nombres ? $user_data->nombres : $usuario;
 				
+				// HTML del email
 				$htmlContent = '<!DOCTYPE html>';
-				$htmlContent .= '<html><head><meta charset="UTF-8"></head><body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">';
+				$htmlContent .= '<html><head><meta charset="UTF-8"></head><body style="font-family: Arial, sans-serif; line-height: 1.6;">';
 				$htmlContent .= '<div style="max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9;">';
 				$htmlContent .= '<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">';
 				$htmlContent .= '<h1 style="color: white; margin: 0;">Recuperación de Contraseña</h1>';
@@ -152,51 +153,96 @@ class Model_login extends CI_Model
 				$htmlContent .= '<p style="color: #999; font-size: 12px; margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px;">Este enlace expirará en 24 horas por seguridad.</p>';
 				$htmlContent .= '</div></div></body></html>';
 				
-				// MÉTODO 1: Intentar con librería Email de CodeIgniter
-				$email_enviado = false;
-				try {
-					$this->email->clear();
-					$config = array(
-						'protocol' => 'mail',
-						'mailtype' => 'html',
-						'charset' => 'utf-8',
-						'newline' => "\r\n",
-						'crlf' => "\r\n"
-					);
-					
-					$this->email->initialize($config);
-					$this->email->from('noreply@' . $_SERVER['HTTP_HOST'], 'Sistema SAC');
-					$this->email->to($usuario);
-					$this->email->subject('Recuperación de Contraseña - SAC');
-					$this->email->message($htmlContent);
-					
-					if($this->email->send()){
-						$email_enviado = true;
-						log_message('info', 'Email enviado con CodeIgniter a: '.$usuario);
-					}
-				} catch(Exception $e) {
-					log_message('error', 'Error CodeIgniter Email: '.$e->getMessage());
+				// Enviar email usando SMTP directo
+				$email_enviado = $this->enviar_email_smtp($usuario, 'Recuperación de Contraseña - SAC', $htmlContent);
+				
+				if($email_enviado) {
+					log_message('info', 'Email de recuperación enviado a: '.$usuario);
+				} else {
+					log_message('error', 'Error al enviar email de recuperación a: '.$usuario);
 				}
 				
-				// MÉTODO 2: Si falla, usar mail() directo de PHP
-				if(!$email_enviado) {
-					$subject = 'Recuperación de Contraseña - SAC';
-					$headers = "MIME-Version: 1.0\r\n";
-					$headers .= "Content-type: text/html; charset=utf-8\r\n";
-					$headers .= "From: Sistema SAC <noreply@" . $_SERVER['HTTP_HOST'] . ">\r\n";
-					$headers .= "Reply-To: noreply@" . $_SERVER['HTTP_HOST'] . "\r\n";
-					$headers .= "X-Mailer: PHP/" . phpversion();
-					
-					if(mail($usuario, $subject, $htmlContent, $headers)){
-						$email_enviado = true;
-						log_message('info', 'Email enviado con mail() a: '.$usuario);
-					} else {
-						log_message('error', 'Error enviando email con mail() a: '.$usuario);
-					}
-				}
-				
-				// Retornar éxito (el token ya está guardado aunque falle el email)
 				return "1";
+		     }
+		      else{		       
+		       return "2";        
+		      }
+	 }
+	 
+	 // Función para enviar email con SMTP directo
+	 private function enviar_email_smtp($to, $subject, $body) {
+	 	$from = 'rv.gohan3@gmail.com';
+	 	$password = 'kugz myaq yrab ipgw';
+	 	$host = 'smtp.gmail.com';
+	 	$port = 587;
+	 	
+	 	$smtp = @fsockopen($host, $port, $errno, $errstr, 30);
+	 	if (!$smtp) return false;
+	 	
+	 	stream_set_timeout($smtp, 10);
+	 	fgets($smtp, 515);
+	 	
+	 	fputs($smtp, "EHLO " . gethostname() . "\r\n");
+	 	$response = fgets($smtp, 515);
+	 	while(substr($response, 3, 1) == '-') {
+	 		$response = fgets($smtp, 515);
+	 	}
+	 	
+	 	fputs($smtp, "STARTTLS\r\n");
+	 	$response = fgets($smtp, 515);
+	 	if(substr($response, 0, 3) != '220') {
+	 		fclose($smtp);
+	 		return false;
+	 	}
+	 	
+	 	if(!@stream_socket_enable_crypto($smtp, true, STREAM_CRYPTO_METHOD_TLS_CLIENT)) {
+	 		fclose($smtp);
+	 		return false;
+	 	}
+	 	
+	 	fputs($smtp, "EHLO " . gethostname() . "\r\n");
+	 	$response = fgets($smtp, 515);
+	 	while(substr($response, 3, 1) == '-') {
+	 		$response = fgets($smtp, 515);
+	 	}
+	 	
+	 	fputs($smtp, "AUTH LOGIN\r\n");
+	 	fgets($smtp, 515);
+	 	
+	 	fputs($smtp, base64_encode($from) . "\r\n");
+	 	fgets($smtp, 515);
+	 	
+	 	fputs($smtp, base64_encode($password) . "\r\n");
+	 	$response = fgets($smtp, 515);
+	 	if(substr($response, 0, 3) != '235') {
+	 		fclose($smtp);
+	 		return false;
+	 	}
+	 	
+	 	fputs($smtp, "MAIL FROM: <$from>\r\n");
+	 	fgets($smtp, 515);
+	 	
+	 	fputs($smtp, "RCPT TO: <$to>\r\n");
+	 	fgets($smtp, 515);
+	 	
+	 	fputs($smtp, "DATA\r\n");
+	 	fgets($smtp, 515);
+	 	
+	 	$headers = "From: Sistema SAC <$from>\r\n";
+	 	$headers .= "To: <$to>\r\n";
+	 	$headers .= "Subject: $subject\r\n";
+	 	$headers .= "MIME-Version: 1.0\r\n";
+	 	$headers .= "Content-Type: text/html; charset=UTF-8\r\n";
+	 	$headers .= "\r\n";
+	 	
+	 	fputs($smtp, $headers . $body . "\r\n.\r\n");
+	 	fgets($smtp, 515);
+	 	
+	 	fputs($smtp, "QUIT\r\n");
+	 	fclose($smtp);
+	 	
+	 	return true;
+	 }
 		     }
 		      else{		       
 		       return "2";        
