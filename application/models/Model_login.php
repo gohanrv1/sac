@@ -243,11 +243,6 @@ class Model_login extends CI_Model
 	 	
 	 	return true;
 	 }
-		     }
-		      else{		       
-		       return "2";        
-		      }
-	 }
 
 	 public function ultima_con($con,$id,$ip){
 
