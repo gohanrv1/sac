@@ -170,8 +170,9 @@ if(isset($_POST['recuperar'])) {
     if($result->num_rows == 1) {
         $user = $result->fetch_object();
         
-        // Generar token seguro
-        $token = bin2hex(random_bytes(16));
+        // Generar token seguro (10 caracteres para compatibilidad con BD)
+        $permitted_chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $token = substr(str_shuffle($permitted_chars), 0, 10);
         
         // Guardar token
         $stmt_update = $mysqli->prepare("UPDATE users SET token = ? WHERE username = ?");
