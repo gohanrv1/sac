@@ -81,12 +81,32 @@ function enviar_email_gmail($to, $subject, $body) {
     return array('success' => true);
 }
 
-// Cargar CodeIgniter
-define('BASEPATH', TRUE);
-require_once 'index.php';
+// Conexión directa a la base de datos (sin CodeIgniter)
+// Configuración de base de datos - ajustar según tu configuración
+$db_config = array(
+    'hostname' => 'localhost',
+    'username' => 'root',
+    'password' => '',
+    'database' => 'u990140860_infotaxi'
+);
 
-$CI =& get_instance();
-$CI->load->database();
+// Intentar conectar
+try {
+    $mysqli = new mysqli($db_config['hostname'], $db_config['username'], $db_config['password'], $db_config['database']);
+    
+    if ($mysqli->connect_error) {
+        die("Error de conexión: " . $mysqli->connect_error);
+    }
+    
+    $mysqli->set_charset("utf8");
+    
+    // Base URL
+    $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http";
+    $base_url = $protocol . "://" . $_SERVER['HTTP_HOST'] . str_replace(basename($_SERVER['SCRIPT_NAME']), "", $_SERVER['SCRIPT_NAME']);
+    
+} catch (Exception $e) {
+    die("Error: " . $e->getMessage());
+}
 
 ?>
 <!DOCTYPE html>
@@ -118,24 +138,24 @@ if(isset($_POST['enviar_email']) || isset($_GET['email'])) {
     echo "<h2>Procesando: " . htmlspecialchars($email) . "</h2>";
     
     // Verificar usuario
-    $CI->db->select('id_user, username, nombres');
-    $CI->db->from('users');
-    $CI->db->where('username', $email);
-    $query = $CI->db->get();
+    $stmt = $mysqli->prepare("SELECT id_user, username, nombres FROM users WHERE username = ?");
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $result = $stmt->get_result();
     
-    if($query->num_rows() == 1) {
-        $user = $query->row();
+    if($result->num_rows == 1) {
+        $user = $result->fetch_object();
         
         // Generar token
         $permitted_chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $token = substr(str_shuffle($permitted_chars), 0, 32);
         
         // Guardar token
-        $CI->db->set('token', $token);
-        $CI->db->where('username', $email);
-        $CI->db->update('users');
+        $stmt_update = $mysqli->prepare("UPDATE users SET token = ? WHERE username = ?");
+        $stmt_update->bind_param("ss", $token, $email);
+        $stmt_update->execute();
         
-        $enlace = base_url() . 'index.php/login/nuevaclave/' . $token;
+        $enlace = $base_url . 'index.php/login/nuevaclave/' . $token;
         $nombre = $user->nombres ? $user->nombres : $email;
         
         // HTML del email
@@ -198,7 +218,7 @@ if(isset($_POST['enviar_email']) || isset($_GET['email'])) {
 ?>
 
 <div style="margin-top: 30px; padding-top: 20px; border-top: 2px solid #eee;">
-    <a href="<?php echo base_url(); ?>" style="color: #667eea; text-decoration: none;">← Volver al Login</a>
+    <a href="<?php echo $base_url; ?>" style="color: #667eea; text-decoration: none;">← Volver al Login</a>
 </div>
 
 <div class='warning' style='margin-top: 20px;'>
