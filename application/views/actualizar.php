@@ -546,22 +546,16 @@
                     
                 </div>
                          <div class="form-group">
-                    <label class="col-sm-9 control-label"></label>
-                    <div class="col-sm-1">
-                        <div class="input-group">
-                                
-                                    <span class="input-group-btn">
-                                        <button class="btn btn-danger" type="button" id="Guardar">Guardar</button>
-                                    </span>
-                                </div>
+                    <label class="col-sm-6 control-label"></label>
+                    <div class="col-sm-3">
+                        <button class="btn btn-success btn-block" type="button" id="Guardar">
+                            <i class="fa fa-save"></i> Actualizar
+                        </button>
                     </div>
-                      <div class="col-sm-1">
-                        <div class="input-group">
-                                
-                                    <span class="input-group-btn">
-                                        <button class="btn btn-danger" type="button" id="Eliminar">Eliminar</button>
-                                    </span>
-                                </div>
+                    <div class="col-sm-3">
+                        <button class="btn btn-danger btn-block" type="button" id="Eliminar">
+                            <i class="fa fa-trash"></i> Eliminar
+                        </button>
                     </div>
                 </div>
 

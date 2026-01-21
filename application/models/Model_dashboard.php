@@ -72,8 +72,14 @@ class Model_dashboard extends CI_Model
       return false;
     }
 
-    public function eliminar($id_user){
+    public function eliminar($id_user, $nuevo_propietario){
+       // Primero transferir todos los registros del usuario a eliminar al nuevo propietario
+       $this->db->set('Reportante_Nombres', $nuevo_propietario);
+       $this->db->where('Reportante_Nombres', $id_user);
+       $this->db->update('personas');
+       
+       // Luego eliminar el usuario
        $this->db->where('id_user', $id_user);
-                $this->db->delete('users');
+       $this->db->delete('users');
     }
   }

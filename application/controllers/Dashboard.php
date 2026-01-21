@@ -85,7 +85,8 @@ public function mostrar_users(){
   }
 
   public function eliminar($id){
-     $datos= $this->Model_dashboard->eliminar($id);
+     $usuario_que_elimina = $this->session->userdata('id_usuario');
+     $datos= $this->Model_dashboard->eliminar($id, $usuario_que_elimina);
      echo $id;
   }
   public function contador(){
