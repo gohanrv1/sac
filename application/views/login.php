@@ -152,9 +152,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 <link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>assets/helpers/responsive-elements.css">
 <link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>assets/helpers/admin-responsive.css">
 
-<!-- Modern Custom Styles -->
-<link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>assets/custom-modern-styles.css">
-
 <!-- JS Core -->
 
 <script type="text/javascript" src="<?php echo base_url(); ?>assets/js-core/jquery-core.js"></script>
