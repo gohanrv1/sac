@@ -476,6 +476,7 @@
                                     <form role="form" name="form_import" id="form_import" method="POST" enctype="multipart/form-data" action="<?php echo base_url()."index.php/importar/excel_import"; ?>" class="form-horizontal bordered-row">
                                         <div class="row">       
 
+                                           <?php if($rol == "admin"){ ?>
                                            <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="nombre" class="col-md-2 text-right" >Nombre Usuario:</label>
@@ -492,7 +493,17 @@
                                                         </select>
                                                     </div>                                                    
                                                 </div> 
-                                            </div>    
+                                            </div>
+                                            <?php } else { ?>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="col-md-4 text-right" >Importando para:</label>
+                                                    <div class="col-md-8">
+                                                        <p class="form-control-static"><strong><?php echo $nombres; ?></strong></p>
+                                                    </div>                                                    
+                                                </div> 
+                                            </div>
+                                            <?php } ?>    
                                              <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="file" class="col-md-4 text-right">Seleccione archivo Valido(.xls o .xlsx):</label>

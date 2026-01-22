@@ -51,13 +51,19 @@ class Importar extends CI_Controller {
         return;
       }
 
-      $id_user = $this->input->post("nombre");
-      $id_user = $this->security->xss_clean($id_user);
-      
-      // Validar que se haya seleccionado un usuario
-      if(empty($id_user)){
-        echo 'Debe seleccionar un usuario';
-        return;
+      // Si es admin, usar el usuario seleccionado, si no, usar el usuario actual
+      if($this->session->userdata('rol') == "admin"){
+        $id_user = $this->input->post("nombre");
+        $id_user = $this->security->xss_clean($id_user);
+        
+        // Validar que se haya seleccionado un usuario
+        if(empty($id_user)){
+          echo 'Debe seleccionar un usuario';
+          return;
+        }
+      } else {
+        // Usuario normal: usar su propio ID
+        $id_user = $this->session->userdata('id_usuario');
       }
       
       // Obtener el nombre del usuario reportante
