@@ -704,13 +704,13 @@
                     </a>
                 </li>
                 <li class="divider"></li>
-                     <li class="quitarmovil">
+                     <li>
                     <a href="<?php echo base_url(); ?>index.php/importar" title="Admin Dashboard">
                         <i class="glyph-icon icon-linecons-tv"></i>
                         <span>IMPORTA BASES DE DATOS</span>
                     </a>
                 </li>
-                <li class="divider quitarmovil"></li>
+                <li class="divider"></li>
                      <li>
                     <a href="<?php echo base_url(); ?>index.php/dashboard/consultas" title="Admin Dashboard">
                         <i class="glyph-icon icon-linecons-tv"></i>
