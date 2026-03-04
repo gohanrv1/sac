@@ -522,7 +522,7 @@
                       
                       <label class="col-sm-2 control-label">Descripción del Reporte:</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" id="d_reporte" name="d_reporte"  required>
+                        <textarea class="form-control" id="d_reporte" name="d_reporte" rows="3" required></textarea>
                     </div>
                     
                 </div>
