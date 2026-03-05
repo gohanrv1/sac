@@ -98,7 +98,6 @@ class Importar extends CI_Controller {
 	          $placa = $this->security->xss_clean($worksheet->getCellByColumnAndRow(4, $row)->getValue());
 	          $valor = $this->security->xss_clean($worksheet->getCellByColumnAndRow(5, $row)->getValue());
 	          $descripcion = $this->security->xss_clean($worksheet->getCellByColumnAndRow(6, $row)->getValue());
-	          $afiliado = $this->security->xss_clean($worksheet->getCellByColumnAndRow(7, $row)->getValue());
 	         // $estado = $this->security->xss_clean($worksheet->getCellByColumnAndRow(9, $row)->getValue());
 	          $fecha = date($format = "Y-m-d", PHPExcel_Shared_Date::ExcelToPHP($fecha)); 
 	          $estado ="";
@@ -112,7 +111,6 @@ class Importar extends CI_Controller {
 	            'Placa'     =>  $placa,
 	            'Valor_Reporte'  => $valor,
 	            'Descripcion_Reporte' => $descripcion,
-	            'Vehiculo_afiliado' =>$afiliado,
 	            'Estado' => 'ACTIVA',
 	            'Reportante_Nombres' =>$empre
 	          );
@@ -162,7 +160,6 @@ class Importar extends CI_Controller {
     $sheet->setCellValue('E2', 'Placa Vehiculo');
     $sheet->setCellValue('F2', 'Valor del Reporte');
     $sheet->setCellValue('G2', 'Descripcion del Reporte');
-    $sheet->setCellValue('H2', 'Vehiculo Afiliado');
     
     // Estilo de encabezados
     $headerStyle = array(
@@ -170,7 +167,7 @@ class Importar extends CI_Controller {
         'fill' => array('type' => PHPExcel_Style_Fill::FILL_SOLID, 'color' => array('rgb' => '4472C4')),
         'alignment' => array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER)
     );
-    $sheet->getStyle('A2:H2')->applyFromArray($headerStyle);
+    $sheet->getStyle('A2:G2')->applyFromArray($headerStyle);
     
     // Datos de ejemplo
     $sheet->setCellValue('A3', '123456789');
@@ -180,10 +177,9 @@ class Importar extends CI_Controller {
     $sheet->setCellValue('E3', 'ABC123');
     $sheet->setCellValue('F3', '50000');
     $sheet->setCellValue('G3', 'Descripción del reporte');
-    $sheet->setCellValue('H3', 'SI');
     
     // Ajustar ancho de columnas
-    foreach(range('A','H') as $col) {
+    foreach(range('A','G') as $col) {
         $sheet->getColumnDimension($col)->setAutoSize(true);
     }
     
