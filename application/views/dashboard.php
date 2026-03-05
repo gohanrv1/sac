@@ -10,6 +10,30 @@
         width: 800px;
         margin: 0 auto;
     }
+    
+    /* Fix overflow for zoom and responsive behavior */
+    .example-box-wrapper {
+        overflow: hidden;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    
+    .example-box-wrapper .form-group.row {
+        margin-left: 0;
+        margin-right: 0;
+        width: 100%;
+    }
+    
+    .example-box-wrapper .form-control {
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+    
+    .example-box-wrapper [class*="col-"] {
+        padding-left: 15px;
+        padding-right: 15px;
+        box-sizing: border-box;
+    }
     </style>
 
 
