@@ -12,27 +12,46 @@
     }
     
     /* Fix overflow for zoom and responsive behavior */
+    .content-box-wrapper {
+        overflow-x: hidden !important;
+        max-width: 100% !important;
+    }
+    
     .example-box-wrapper {
-        overflow: hidden;
-        width: 100%;
-        box-sizing: border-box;
+        overflow: hidden !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        padding-left: 15px !important;
+        padding-right: 15px !important;
     }
     
+    .example-box-wrapper .form-group,
     .example-box-wrapper .form-group.row {
-        margin-left: 0;
-        margin-right: 0;
-        width: 100%;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
     }
     
-    .example-box-wrapper .form-control {
-        max-width: 100%;
-        box-sizing: border-box;
+    .example-box-wrapper .form-control,
+    .example-box-wrapper input,
+    .example-box-wrapper textarea {
+        max-width: 100% !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
     }
     
     .example-box-wrapper [class*="col-"] {
-        padding-left: 15px;
-        padding-right: 15px;
-        box-sizing: border-box;
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+        box-sizing: border-box !important;
+        max-width: 100%;
+    }
+    
+    .example-box-wrapper .control-label {
+        word-wrap: break-word;
+        overflow-wrap: break-word;
     }
     </style>
 
