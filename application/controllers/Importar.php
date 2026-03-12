@@ -66,13 +66,12 @@ class Importar extends CI_Controller {
         $id_user = $this->session->userdata('id_usuario');
       }
       
-      // Obtener el nombre del usuario reportante
+      // Verificar que el usuario existe
       $user_data = $this->Model_dashboard->get_user_by_id($id_user);
       if(!$user_data){
         echo 'Usuario no encontrado';
         return;
       }
-      $empre = $user_data['nombres'];
       
        //date_default_timezone_set('America/Bogota');
        $error="";
@@ -112,7 +111,7 @@ class Importar extends CI_Controller {
 	            'Valor_Reporte'  => $valor,
 	            'Descripcion_Reporte' => $descripcion,
 	            'Estado' => 'ACTIVA',
-	            'Reportante_Nombres' =>$empre
+	            'Reportante_Nombres' => $id_user
 	          );
 	          }	           
 	        }//for
