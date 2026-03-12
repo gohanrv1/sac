@@ -723,6 +723,11 @@ function cargar_usuarios(){
             }).done(function(data){
                  var da = JSON.parse(data);
                  
+                 // Destruir DataTable si ya existe
+                 if ($.fn.DataTable.isDataTable('#datatable-example')) {
+                     $('#datatable-example').DataTable().destroy();
+                 }
+                 
                  $("#tuser").html("");                
                 $.each(da, function(i,item){
                   
@@ -759,6 +764,11 @@ function eliminar_usu(id){
                     url: "<?php echo base_url();?>index.php/dashboard/mostrar_users"                   
             }).done(function(data){
                  var da = JSON.parse(data);
+                 
+                 // Destruir DataTable si ya existe
+                 if ($.fn.DataTable.isDataTable('#datatable-example')) {
+                     $('#datatable-example').DataTable().destroy();
+                 }
                  
                  $("#tuser").html("");                
                 $.each(da, function(i,item){
