@@ -71,6 +71,37 @@ class Model_dashboard extends CI_Model
       }
       return false;
     }
+    
+    public function actualizar_usuario($id_user, $usuario, $rol, $pass, $nombres, $Celular){
+      // Verificar que el username no esté en uso por otro usuario
+      $this->db->select('id_user, username');
+      $this->db->from('users');
+      $this->db->where('username', $usuario);
+      $this->db->where('id_user !=', $id_user);
+      $query = $this->db->get();
+      
+      if($query->num_rows() > 0){
+        return "1"; // Usuario ya existe
+      }
+      
+      // Preparar datos para actualizar
+      $data = array(
+        'username' => $usuario,
+        'rol' => $rol,
+        'nombres' => $nombres,
+        'Celular' => $Celular
+      );
+      
+      // Si hay contraseña, agregarla
+      if(!empty($pass)){
+        $data['password'] = sha1($pass);
+      }
+      
+      $this->db->where('id_user', $id_user);
+      $this->db->update('users', $data);
+      
+      return "2"; // Actualizado exitosamente
+    }
 
     public function eliminar($id_user, $nuevo_propietario){
        // Primero transferir todos los registros del usuario a eliminar al nuevo propietario

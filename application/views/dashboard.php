@@ -617,6 +617,87 @@
 </div>
 </div>
 
+<!-- Modal Editar Usuario -->
+<div class="modal fade" id="modalEditarUsuario" tabindex="-1" role="dialog" aria-labelledby="modalEditarUsuarioLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="modalEditarUsuarioLabel">Editar Usuario</h4>
+            </div>
+            <div class="modal-body">
+                <form role="form" name="fusuarioEdit" id="fusuarioEdit" class="form-horizontal bordered-row">
+                    <input type="hidden" id="edit_id_user" name="edit_id_user">
+                    
+                    <div class="row">       
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="edit_usuario" class="col-md-4 text-right">Usuario:</label>
+                                <div class="col-md-8">                                                   
+                                    <input type="email" class="form-control" id="edit_usuario" name="edit_usuario" placeholder="Ingrese correo del usuario" required="true">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="edit_nombre" class="col-md-4 text-right">Nombre Empresa:</label>
+                                <div class="col-md-8">                                                   
+                                    <input type="text" class="form-control" id="edit_nombre" name="edit_nombre" placeholder="Ingrese Nombre De La Empresa" required="true">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">  
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="edit_Celular" class="col-md-4 text-right">Celular:</label>
+                                <div class="col-md-8">                                                   
+                                    <input type="number" class="form-control" id="edit_Celular" name="edit_Celular" placeholder="Celular" required="true">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="edit_rol" class="col-md-4 text-right">Tipo Rol:</label>
+                                <div class="col-md-8">
+                                    <select name="edit_rol" id="edit_rol" class="form-control" required="">
+                                        <option value="">seleccione de la lista</option>    
+                                        <option value="admin">Administrador</option>    
+                                        <option value="usuario">Usuario</option>           
+                                    </select>
+                                </div>                                                    
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">  
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="edit_pass" class="col-md-4 text-right">Nueva Contraseña:</label>
+                                <div class="col-md-8">
+                                    <input type="password" class="form-control" id="edit_pass" name="edit_pass" placeholder="Dejar en blanco para mantener la actual">
+                                </div>                                                   
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="edit_pass2" class="col-md-4 text-right">Confirma Contraseña:</label>
+                                <div class="col-md-8">
+                                    <input type="password" class="form-control" id="edit_pass2" name="edit_pass2" placeholder="Confirmar Contraseña">
+                                </div>
+                            </div>
+                        </div>                      
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary" id="btnActualizarUsuario">Actualizar Usuario</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- WIDGETS -->
 
@@ -731,7 +812,7 @@ function cargar_usuarios(){
                  $("#tuser").html("");                
                 $.each(da, function(i,item){
                   
-                   $("#tuser").append('<tr><td ><div >'+da[i].username+'</div></td><td class="text-nowrap">'+da[i].nombres+'</td><td>'+da[i].rol+'</td><td>'+da[i].ultima_cone+'</td><td> <a href="#" onclick="eliminar_usu('+da[i].id_user+')"><i class="glyph-icon tooltip-button demo-icon icon-remove" title="Eliminar"></i></a></td></tr>');
+                   $("#tuser").append('<tr><td ><div >'+da[i].username+'</div></td><td class="text-nowrap">'+da[i].nombres+'</td><td>'+da[i].rol+'</td><td>'+da[i].ultima_cone+'</td><td> <a href="#" onclick="editar_usuario('+da[i].id_user+')"><i class="glyph-icon tooltip-button demo-icon icon-edit" title="Editar"></i></a> <a href="#" onclick="eliminar_usu('+da[i].id_user+')"><i class="glyph-icon tooltip-button demo-icon icon-remove" title="Eliminar"></i></a></td></tr>');
 
                  });//each
                 /*<td><button type="button" class="btn btn-sm btn-info" data-toggle="modal" data-target="#myModal"><em class="fa fa-check"></em> </button> <button type="button" onclick="consultar_id('+da[i].cc_user+')" class="btn btn-sm btn-success updateclii" data-toggle="modal" data-target="#ModalClientesUpdate"><em class="fa fa-pencil"></em></button></td>*/
@@ -752,6 +833,60 @@ function cargar_usuarios(){
 
 
      }); 
+
+function editar_usuario(id){
+    $.ajax({
+        type: "POST",
+        url: "<?php echo base_url();?>index.php/dashboard/obtener_usuario/"+id                  
+    }).done(function(data){
+        var usuario = JSON.parse(data);
+        if(usuario){
+            $('#edit_id_user').val(usuario.id_user);
+            $('#edit_usuario').val(usuario.username);
+            $('#edit_nombre').val(usuario.nombres);
+            $('#edit_Celular').val(usuario.Celular);
+            $('#edit_rol').val(usuario.rol);
+            $('#edit_pass').val('');
+            $('#edit_pass2').val('');
+            $('#modalEditarUsuario').modal('show');
+        }
+    });
+}
+
+$('#btnActualizarUsuario').click(function(){
+    var pass = $('#edit_pass').val();
+    var pass2 = $('#edit_pass2').val();
+    
+    // Si hay contraseña, validar que coincidan
+    if(pass !== '' || pass2 !== ''){
+        if(pass !== pass2){
+            alert("Las contraseñas no coinciden");
+            return false;
+        }
+    }
+    
+    $.ajax({
+        type: "POST",
+        url: "<?php echo base_url();?>index.php/dashboard/actualizar_usuario",
+        data: {
+            id_user: $('#edit_id_user').val(),
+            usuario: $('#edit_usuario').val(),
+            nombre: $('#edit_nombre').val(),
+            Celular: $('#edit_Celular').val(),
+            rol: $('#edit_rol').val(),
+            pass: pass
+        }
+    }).done(function(res){
+        if(res=="1"){
+            alert("Ese nombre de usuario ya está registrado por otro usuario!");
+        } else if(res=="2"){
+            alert("Usuario actualizado con éxito!");
+            $('#modalEditarUsuario').modal('hide');
+            cargar_usuarios();
+        }
+    });
+});
+
 function eliminar_usu(id){
     var r = confirm("Deseas eliminar este usuario?");
     if (r==true) {
@@ -773,7 +908,7 @@ function eliminar_usu(id){
                  $("#tuser").html("");                
                 $.each(da, function(i,item){
                   
-                   $("#tuser").append('<tr><td ><div >'+da[i].username+'</div></td><td class="text-nowrap">'+da[i].nombres+'</td><td>'+da[i].rol+'</td><td>'+da[i].ultima_cone+'</td><td> <a href="#" onclick="eliminar_usu('+da[i].id_user+')"><i class="glyph-icon tooltip-button demo-icon icon-remove" title="Eliminar"></i></a></td></tr>');
+                   $("#tuser").append('<tr><td ><div >'+da[i].username+'</div></td><td class="text-nowrap">'+da[i].nombres+'</td><td>'+da[i].rol+'</td><td>'+da[i].ultima_cone+'</td><td> <a href="#" onclick="editar_usuario('+da[i].id_user+')"><i class="glyph-icon tooltip-button demo-icon icon-edit" title="Editar"></i></a> <a href="#" onclick="eliminar_usu('+da[i].id_user+')"><i class="glyph-icon tooltip-button demo-icon icon-remove" title="Eliminar"></i></a></td></tr>');
 
                  });//each
                 /*<td><button type="button" class="btn btn-sm btn-info" data-toggle="modal" data-target="#myModal"><em class="fa fa-check"></em> </button> <button type="button" onclick="consultar_id('+da[i].cc_user+')" class="btn btn-sm btn-success updateclii" data-toggle="modal" data-target="#ModalClientesUpdate"><em class="fa fa-pencil"></em></button></td>*/

@@ -89,6 +89,35 @@ public function mostrar_users(){
      $datos= $this->Model_dashboard->eliminar($id, $usuario_que_elimina);
      echo $id;
   }
+  
+  public function obtener_usuario($id){
+    $datos= $this->Model_dashboard->get_user_by_id($id);
+    echo json_encode($datos);
+  }
+  
+  public function actualizar_usuario(){
+    $id_user = $this->input->post("id_user");
+    $id_user = $this->security->xss_clean($id_user);
+    
+    $usuario = $this->input->post("usuario");
+    $usuario = $this->security->xss_clean($usuario);
+
+    $rol = $this->input->post("rol");
+    $rol = $this->security->xss_clean($rol);
+    
+    $Celular = $this->input->post("Celular");
+    $Celular = $this->security->xss_clean($Celular);
+    
+    $pass = $this->input->post("pass");
+    $pass = $this->security->xss_clean($pass);
+    
+    $nombre = $this->input->post("nombre");
+    $nombre = $this->security->xss_clean($nombre);
+
+    $datos = $this->Model_dashboard->actualizar_usuario($id_user, $usuario, $rol, $pass, $nombre, $Celular);
+    echo $datos;   
+  }
+  
   public function contador(){
      $datos= $this->Model_dashboard->contador();
      echo json_encode($datos);
